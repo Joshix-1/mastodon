@@ -20,6 +20,7 @@ class Api::V1::DirectoriesController < Api::BaseController
 
   def accounts_scope
     Account.discoverable.tap do |scope|
+      scope.merge!(Account.without_bots)
       scope.merge!(Account.local)                                          if truthy_param?(:local)
       scope.merge!(Account.by_recent_status)                               if params[:order].blank? || params[:order] == 'active'
       scope.merge!(Account.order(id: :desc))                               if params[:order] == 'new'
