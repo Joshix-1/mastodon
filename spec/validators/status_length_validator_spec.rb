@@ -24,20 +24,20 @@ RSpec.describe StatusLengthValidator do
       expect(status).to_not have_received(:errors)
     end
 
-    it 'adds an error when content warning is over character limit' do
-      status = status_double(spoiler_text: 'a' * 520)
+    it 'adds an error when content warning is over 8192 characters' do
+      status = status_double(spoiler_text: 'a' * 8193)
       subject.validate(status)
       expect(status.errors).to have_received(:add)
     end
 
-    it 'adds an error when text is over character limit' do
-      status = status_double(text: 'a' * 520)
+    it 'adds an error when text is over 8192 characters' do
+      status = status_double(text: 'a' * 8193)
       subject.validate(status)
       expect(status.errors).to have_received(:add)
     end
 
     it 'adds an error when text and content warning are over character limit total' do
-      status = status_double(spoiler_text: 'a' * 250, text: 'b' * 251)
+      status = status_double(spoiler_text: 'a' * 4096, text: 'b' * 4097)
       subject.validate(status)
       expect(status.errors).to have_received(:add)
     end
@@ -59,7 +59,7 @@ RSpec.describe StatusLengthValidator do
     end
 
     it 'does not reduce calculated length of count overly long URLs' do
-      text = "http://example.com/valid?#{'#foo?' * 1000}"
+      text = "http://example.com/valid?#{'#foo?' * 10000}"
       status = status_double(text: text)
       subject.validate(status)
       expect(status.errors).to have_received(:add)
@@ -74,7 +74,7 @@ RSpec.describe StatusLengthValidator do
     end
 
     it 'does count both parts of remote usernames for overly long domains' do
-      text   = "@alice@#{'b' * 500}.com"
+      text   = "@alice@#{'b' * 8200}.com"
       status = status_double(text: text)
 
       subject.validate(status)
