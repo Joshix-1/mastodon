@@ -41,6 +41,7 @@ class CommunityTimeline extends React.PureComponent {
 
   static defaultProps = {
     onlyMedia: false,
+    hideBots: false,
   };
 
   static propTypes = {
@@ -50,6 +51,7 @@ class CommunityTimeline extends React.PureComponent {
     hasUnread: PropTypes.bool,
     multiColumn: PropTypes.bool,
     onlyMedia: PropTypes.bool,
+    hideBots: PropTypes.bool,
   };
 
   handlePin = () => {
@@ -138,12 +140,18 @@ class CommunityTimeline extends React.PureComponent {
 
         <DismissableBanner id='community_timeline'>
           <FormattedMessage id='dismissable_banner.community_timeline' defaultMessage='These are the most recent public posts from people whose accounts are hosted by {domain}.' values={{ domain }} />
+          {' '}
+          <FormattedMessage
+            id='dismissable_banner.community_timeline.filter_options'
+            defaultMessage='Check the configuration menu for ways to customize what appears on this timeline.'
+          />
         </DismissableBanner>
 
         <StatusListContainer
           trackScroll={!pinned}
           scrollKey={`community_timeline-${columnId}`}
           timelineId={`community${onlyMedia ? ':media' : ''}`}
+          columnId={columnId}
           onLoadMore={this.handleLoadMore}
           emptyMessage={<FormattedMessage id='empty_column.community' defaultMessage='The local timeline is empty. Write something publicly to get the ball rolling!' />}
           bindToDocument={!multiColumn}

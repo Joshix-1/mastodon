@@ -42,6 +42,7 @@ class PublicTimeline extends React.PureComponent {
 
   static defaultProps = {
     onlyMedia: false,
+    hideBots: false,
   };
 
   static propTypes = {
@@ -51,6 +52,7 @@ class PublicTimeline extends React.PureComponent {
     multiColumn: PropTypes.bool,
     hasUnread: PropTypes.bool,
     onlyMedia: PropTypes.bool,
+    hideBots: PropTypes.bool,
     onlyRemote: PropTypes.bool,
   };
 
@@ -140,10 +142,16 @@ class PublicTimeline extends React.PureComponent {
 
         <DismissableBanner id='public_timeline'>
           <FormattedMessage id='dismissable_banner.public_timeline' defaultMessage='These are the most recent public posts from people on this and other servers of the decentralized network that this server knows about.' />
+          {' '}
+          <FormattedMessage
+            id='dismissable_banner.community_timeline.filter_options'
+            defaultMessage='Check the configuration menu for ways to customize what appears on this timeline.'
+          />
         </DismissableBanner>
 
         <StatusListContainer
           timelineId={`public${onlyRemote ? ':remote' : ''}${onlyMedia ? ':media' : ''}`}
+          columnId={columnId}
           onLoadMore={this.handleLoadMore}
           trackScroll={!pinned}
           scrollKey={`public_timeline-${columnId}`}
