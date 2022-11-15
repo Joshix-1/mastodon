@@ -42,6 +42,7 @@ class CommunityTimeline extends PureComponent {
   static defaultProps = {
     onlyMedia: false,
     hideBots: false,
+    hideSensitiveBots: false,
   };
 
   static propTypes = {
@@ -53,6 +54,7 @@ class CommunityTimeline extends PureComponent {
     multiColumn: PropTypes.bool,
     onlyMedia: PropTypes.bool,
     hideBots: PropTypes.bool,
+    hideSensitiveBots: PropTypes.bool,
   };
 
   handlePin = () => {
