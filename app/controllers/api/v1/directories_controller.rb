@@ -23,6 +23,7 @@ class Api::V1::DirectoriesController < Api::BaseController
 
   def accounts_scope
     Account.discoverable.tap do |scope|
+      scope.merge!(Account.without_bots)
       scope.merge!(account_order_scope)
       scope.merge!(local_account_scope) if local_accounts?
       scope.merge!(account_exclusion_scope) if current_account
