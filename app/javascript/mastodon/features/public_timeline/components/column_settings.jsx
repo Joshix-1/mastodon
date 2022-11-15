@@ -24,6 +24,7 @@ class ColumnSettings extends PureComponent {
         <div className='column-settings__row'>
           <SettingToggle settings={settings} settingPath={['other', 'onlyMedia']} onChange={onChange} label={<FormattedMessage id='community.column_settings.media_only' defaultMessage='Media only' />} />
           <SettingToggle settings={settings} settingPath={['shows', 'hideBots']} onChange={onChange} label={<FormattedMessage id='community.column_settings.hide_bots' defaultMessage='Hide bot posts' />} />
+          <SettingToggle settings={settings} settingPath={['shows', 'hideSensitiveBots']} onChange={onChange} label={<FormattedMessage id='community.column_settings.hide_sensitive_bots' defaultMessage='Hide sensitive bot posts' />} />
           <SettingToggle settings={settings} settingPath={['other', 'onlyRemote']} onChange={onChange} label={<FormattedMessage id='community.column_settings.remote_only' defaultMessage='Remote only' />} />
         </div>
       </div>
