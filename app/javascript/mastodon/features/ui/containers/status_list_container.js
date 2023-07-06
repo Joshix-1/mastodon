@@ -20,8 +20,8 @@ const makeGetStatusIds = (pending = false) => createSelector([
 ], (timelineSettings, statusIds, [ column, columnIndex, columnSettings ], statuses) => {
   const showsSettings =
     (column && columnIndex > 0)
-    ? columnSettings.getIn(['params', 'shows'], ImmutableMap())
-    : timelineSettings.get('shows', ImmutableMap());
+      ? columnSettings.getIn(['params', 'shows'], ImmutableMap())
+      : timelineSettings.get('shows', ImmutableMap());
 
   return statusIds.filter(id => {
     if (id === null || id === 'inline-follow-suggestions') return true;
