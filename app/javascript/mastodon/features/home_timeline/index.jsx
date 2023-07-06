@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { PureComponent } from 'react';
 
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
+import { Link } from 'react-router-dom';
 
 import classNames from 'classnames';
 import { Helmet } from 'react-helmet';
