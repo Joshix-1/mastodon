@@ -46,7 +46,7 @@ class PublicTimeline extends PureComponent {
     hideBots: false,
     hideSensitiveBots: false,
   };
-i
+
   static propTypes = {
     identity: identityContextPropShape,
     dispatch: PropTypes.func.isRequired,
