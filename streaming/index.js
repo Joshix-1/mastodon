@@ -859,7 +859,7 @@ const startServer = async () => {
                 results.push({
                   filter: cachedFilter.filter,
                   keyword_matches,
-                  status_matches: null
+                  status_matches: null,
                 });
               }
 
@@ -874,7 +874,7 @@ const startServer = async () => {
             // filtered: https://docs.joinmastodon.org/entities/Status/#filtered
             transmit(event, {
               ...payload,
-              filtered: filter_results
+              filtered: filter_results,
             });
           } else {
             transmit(event, payload);
