@@ -25,7 +25,7 @@ module Mastodon
     end
 
     def build_metadata
-      version_configuration[:metadata]
+      'fosspride'
     end
 
     def to_a
@@ -50,7 +50,7 @@ module Mastodon
     end
 
     def repository
-      source_configuration[:repository]
+      ENV.fetch('GITHUB_REPOSITORY', 'Joshix-1/mastodon')
     end
 
     def source_base_url
@@ -59,7 +59,7 @@ module Mastodon
 
     # specify git tag or commit hash here
     def source_tag
-      source_configuration[:tag]
+      ENV.fetch('SOURCE_TAG', 'v#{self}')
     end
 
     def source_url
