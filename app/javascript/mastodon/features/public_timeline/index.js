@@ -45,7 +45,7 @@ class PublicTimeline extends React.PureComponent {
     hideBots: false,
     hideSensitiveBots: false,
   };
-i
+
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     intl: PropTypes.object.isRequired,
