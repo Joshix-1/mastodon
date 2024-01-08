@@ -12,11 +12,12 @@ import { connect } from 'react-redux';
 import ChevronRightIcon from '@/material-icons/400-24px/chevron_right.svg?react';
 import { Icon }  from 'mastodon/components/icon';
 import { Poll } from 'mastodon/components/poll';
-import { identityContextPropShape, withIdentity } from 'mastodon/identity_context';
-import { languages as preloadedLanguages } from 'mastodon/initial_state';
-
 import { EmojiHTML } from './emoji/html';
 import { HandledLink } from './status/handled_link';
+import api from 'mastodon/api';
+import { identityContextPropShape, withIdentity } from 'mastodon/identity_context';
+import { languages as preloadedLanguages, autoPlayGif } from 'mastodon/initial_state';
+import { importFetchedAccounts, importFetchedStatuses } from 'mastodon/actions/importer';
 
 const MAX_HEIGHT = 706; // 22px * 32 (+ 2px padding at the top)
 
@@ -92,10 +93,11 @@ class StatusContent extends PureComponent {
     onCollapsedToggle: PropTypes.func,
     languages: ImmutablePropTypes.map,
     intl: PropTypes.object,
+    dispatch: ProtoTypes.func,
     // from react-router
     match: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
+    history: PropTypes.object.isRequired,
   };
 
   _updateStatusLinks () {
@@ -105,7 +107,41 @@ class StatusContent extends PureComponent {
       return;
     }
 
+    const links = node.querySelectorAll('a');
+
+    for (let i = 0; i < links.length; ++i) {
+      const link = links[i];
+
+      if (link.classList.contains('status-link')) {
+        continue;
+      }
+
+      link.classList.add('status-link');
+
+      const mention = this.props.status.get('mentions').find(item => link.href === item.get('url'));
+
+      if (mention) {
+        link.addEventListener('click', this.onMentionClick.bind(this, mention), false);
+        link.setAttribute('title', `@${mention.get('acct')}`);
+        link.setAttribute('href', `/@${mention.get('acct')}`);
+        link.setAttribute('data-hover-card-account', mention.get('id'));
+      } else if (link.textContent[0] === '#' || (link.previousSibling && link.previousSibling.textContent && link.previousSibling.textContent[link.previousSibling.textContent.length - 1] === '#')) {
+        link.addEventListener('click', this.onHashtagClick.bind(this, link.text), false);
+        link.setAttribute('href', `/tags/${link.text.replace(/^#/, '')}`);
+        link.setAttribute('data-menu-hashtag', this.props.status.getIn(['account', 'id']));
+      } else if (status.get('uri') === link.href) {
+        // the link points to the source of the status. this happens e.g. with lemmy posts.
+        // there is no use in trying to open the url on this instance as it's already opened.
+        link.setAttribute('title', link.href);
+        link.classList.add('unhandled-link');
+      } else {
+        link.setAttribute('title', link.href);
+        link.addEventListener('click', this.onLinkClick.bind(this, link), false);
+      }
+    }
+
     const { status, onCollapsedToggle } = this.props;
+
     if (status.get('collapsed', null) === null && onCollapsedToggle) {
       const { collapsible, onClick } = this.props;
 
@@ -126,6 +162,77 @@ class StatusContent extends PureComponent {
   componentDidUpdate () {
     this._updateStatusLinks();
   }
+
+  onMentionClick = (mention, e) => {
+    if (this.props.history && e.button === 0 && !(e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      this.props.history.push(`/@${mention.get('acct')}`);
+    }
+  };
+
+  onHashtagClick = (hashtag, e) => {
+    hashtag = hashtag.replace(/^#/, '');
+
+    if (this.props.history && e.button === 0 && !(e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      this.props.history.push(`/tags/${hashtag}`);
+    }
+  };
+
+  onLinkClick = (anchor, e) => {
+    if (anchor.getAttribute('search-not-found')) {
+      return;
+    }
+    const url = anchor?.href;
+    if (!url || !(e.button === 0 && !(e.ctrlKey || e.metaKey))) {
+      return;
+    }
+    e.preventDefault();
+    const history = this.props.history;
+    if (url.startsWith("/")) {
+      history.push(url);
+      return;
+    }
+    if (url.startsWith(window.location.origin)) {
+      history.push(url.slice(window.location.origin.length));
+      return;
+    }
+
+    const dispatch = this.props.dispatch;
+    const onFailure = () => {
+      anchor.setAttribute('search-not-found', 'true');
+      window.open(url);
+    };
+
+    dispatch((dispatch, getState) => {
+		  const signedIn = !!getState().getIn(['meta', 'me']);
+
+		  if (!signedIn) {
+	      onFailure();
+
+		    return;
+		  }
+
+		  return api().get('/api/v2/search', { params: { q: url, resolve: true } }).then(response => {
+				let newUrl;
+		    if (response.data.accounts?.length > 0) {
+		      dispatch(importFetchedAccounts(response.data.accounts));
+		      newUrl = `/@${response.data.accounts[0].acct}`;
+		    } else if (response.data.statuses?.length > 0) {
+		      dispatch(importFetchedStatuses(response.data.statuses));
+		      newUrl = `/@${response.data.statuses[0].account.acct}/${response.data.statuses[0].id}`;
+		    } else {
+		      onFailure();
+					return;
+		    }
+	      anchor.href = newUrl;
+	      anchor.setAttribute('title', newUrl);
+	      history.push(newUrl);
+		  }).catch(err => {
+		      onFailure();
+		  });
+    });
+  };
 
   handleMouseDown = (e) => {
     this.startXY = [e.clientX, e.clientY];
