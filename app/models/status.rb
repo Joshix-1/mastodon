@@ -112,8 +112,6 @@ class Status < ApplicationRecord
   scope :not_reply, -> { where(reply: false) }
   scope :reply_to_account, -> { where(arel_table[:in_reply_to_account_id].eq arel_table[:account_id]) }
   scope :without_reblogs, -> { where(statuses: { reblog_of_id: nil }) }
-  scope :without_sensitive_bots, -> { joins(:account).where("NOT (accounts.actor_type IN ('Application', 'Service') AND statuses.sensitive)") }
-  scope :with_public_visibility, -> { where(visibility: :public) }
   scope :tagged_with, ->(tag_ids) { joins(:statuses_tags).where(statuses_tags: { tag_id: tag_ids }) }
   scope :not_excluded_by_account, ->(account) { where.not(account_id: account.excluded_from_timeline_account_ids) }
   scope :not_domain_blocked_by_account, ->(account) { account.excluded_from_timeline_domains.blank? ? left_outer_joins(:account) : left_outer_joins(:account).merge(Account.not_domain_blocked_by_account(account)) }

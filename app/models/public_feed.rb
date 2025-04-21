@@ -23,7 +23,6 @@ class PublicFeed
 
     scope.merge!(without_replies_scope) unless with_replies?
     scope.merge!(without_reblogs_scope) unless with_reblogs?
-    scope.merge!(Status.without_sensitive_bots) unless account?
     scope.merge!(local_only_scope) if local_only?
     scope.merge!(remote_only_scope) if remote_only?
     scope.merge!(account_filters_scope) if account?

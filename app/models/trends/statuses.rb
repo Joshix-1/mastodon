@@ -26,7 +26,6 @@ class Trends::Statuses < Trends::Base
       scope = Status.joins(:trend).reorder(score: :desc)
       scope = scope.reorder(language_order_clause.desc, score: :desc) if preferred_languages.present?
       scope = scope.merge(StatusTrend.allowed) if @allowed
-      scope = scope.merge(Status.without_sensitive_bots) unless @account.present?
       scope = scope.not_excluded_by_account(@account).not_domain_blocked_by_account(@account) if @account.present?
       scope = scope.offset(@offset) if @offset.present?
       scope = scope.limit(@limit) if @limit.present?
