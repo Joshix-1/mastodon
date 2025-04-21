@@ -43,10 +43,6 @@ const makeGetStatusIds = (pending = false) => createSelector([
       showStatus = showStatus && !statusForId.get('bot');
     }
 
-    if (showsSettings.get('hideSensitiveBots') === true) {
-      showStatus = showStatus && !(statusForId.get('bot') && statusForId.get('sensitive'));
-    }
-
     return showStatus;
   });
 });
