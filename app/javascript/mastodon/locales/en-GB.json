@@ -143,7 +143,6 @@
   "column_subheading.settings": "Settings",
   "community.column_settings.local_only": "Local only",
   "community.column_settings.media_only": "Media Only",
-  "community.column_settings.hide_bots": "Hide Bot Posts",
   "community.column_settings.remote_only": "Remote only",
   "compose.language.change": "Change language",
   "compose.language.search": "Search languages...",

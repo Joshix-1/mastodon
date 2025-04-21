@@ -27,7 +27,6 @@ export function normalizeFilterResult(result) {
 export function normalizeStatus(status, normalOldStatus) {
   const normalStatus   = { ...status };
   normalStatus.account = status.account.id;
-  normalStatus.bot = status.account.bot;
 
   if (status.reblog && status.reblog.id) {
     normalStatus.reblog = status.reblog.id;

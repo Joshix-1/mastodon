@@ -43,7 +43,6 @@ const mapStateToProps = (state, { columnId }) => {
 class PublicTimeline extends PureComponent {
   static defaultProps = {
     onlyMedia: false,
-    hideBots: false,
   };
 
   static propTypes = {
@@ -54,7 +53,6 @@ class PublicTimeline extends PureComponent {
     multiColumn: PropTypes.bool,
     hasUnread: PropTypes.bool,
     onlyMedia: PropTypes.bool,
-    hideBots: PropTypes.bool,
     onlyRemote: PropTypes.bool,
   };
 
@@ -143,18 +141,9 @@ class PublicTimeline extends PureComponent {
           <ColumnSettingsContainer columnId={columnId} />
         </ColumnHeader>
 
-        <DismissableBanner id='public_timeline'>
-          <FormattedMessage id='dismissable_banner.public_timeline' defaultMessage='These are the most recent public posts from people on the social web that people on {domain} follow.' values={{ domain }} />
-          {' '}
-          <FormattedMessage
-            id='dismissable_banner.community_timeline.filter_options'
-            defaultMessage='Check the configuration menu for ways to customize what appears on this timeline.'
-          />
-        </DismissableBanner>
-
         <StatusListContainer
+          prepend={<DismissableBanner id='public_timeline'><FormattedMessage id='dismissable_banner.public_timeline' defaultMessage='These are the most recent public posts from people on the social web that people on {domain} follow.' values={{ domain }} /></DismissableBanner>}
           timelineId={`public${onlyRemote ? ':remote' : ''}${onlyMedia ? ':media' : ''}`}
-          columnId={columnId}
           onLoadMore={this.handleLoadMore}
           trackScroll={!pinned}
           scrollKey={`public_timeline-${columnId}`}
