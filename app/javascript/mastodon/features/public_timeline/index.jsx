@@ -44,7 +44,6 @@ class PublicTimeline extends PureComponent {
   static defaultProps = {
     onlyMedia: false,
     hideBots: false,
-    hideSensitiveBots: false,
   };
 
   static propTypes = {
@@ -56,7 +55,6 @@ class PublicTimeline extends PureComponent {
     hasUnread: PropTypes.bool,
     onlyMedia: PropTypes.bool,
     hideBots: PropTypes.bool,
-    hideSensitiveBots: PropTypes.bool,
     onlyRemote: PropTypes.bool,
   };
 
