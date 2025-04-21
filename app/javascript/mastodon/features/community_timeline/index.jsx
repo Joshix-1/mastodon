@@ -41,7 +41,6 @@ const mapStateToProps = (state, { columnId }) => {
 class CommunityTimeline extends PureComponent {
   static defaultProps = {
     onlyMedia: false,
-    hideBots: false,
   };
 
   static propTypes = {
@@ -52,7 +51,6 @@ class CommunityTimeline extends PureComponent {
     hasUnread: PropTypes.bool,
     multiColumn: PropTypes.bool,
     onlyMedia: PropTypes.bool,
-    hideBots: PropTypes.bool,
   };
 
   handlePin = () => {
@@ -140,20 +138,11 @@ class CommunityTimeline extends PureComponent {
           <ColumnSettingsContainer columnId={columnId} />
         </ColumnHeader>
 
-        <DismissableBanner id='community_timeline'>
-          <FormattedMessage id='dismissable_banner.community_timeline' defaultMessage='These are the most recent public posts from people whose accounts are hosted by {domain}.' values={{ domain }} />
-          {' '}
-          <FormattedMessage
-            id='dismissable_banner.community_timeline.filter_options'
-            defaultMessage='Check the configuration menu for ways to customize what appears on this timeline.'
-          />
-        </DismissableBanner>
-
-        <StatusListContainer          
+        <StatusListContainer
+          prepend={<DismissableBanner id='community_timeline'><FormattedMessage id='dismissable_banner.community_timeline' defaultMessage='These are the most recent public posts from people whose accounts are hosted by {domain}.' values={{ domain }} /></DismissableBanner>}
           trackScroll={!pinned}
           scrollKey={`community_timeline-${columnId}`}
           timelineId={`community${onlyMedia ? ':media' : ''}`}
-          columnId={columnId}
           onLoadMore={this.handleLoadMore}
           emptyMessage={<FormattedMessage id='empty_column.community' defaultMessage='The local timeline is empty. Write something publicly to get the ball rolling!' />}
           bindToDocument={!multiColumn}
