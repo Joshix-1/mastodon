@@ -200,6 +200,7 @@ class StatusContent extends PureComponent {
       return;
     }
     e.preventDefault();
+    e.stopImmediatePropagation();
     const history = this.props.history;
     if (url.startsWith("/")) {
       history.push(url);
